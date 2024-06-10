@@ -1,61 +1,69 @@
 const express = require('express')
-const exphbs = require('express-handlebars')
+const { create } = require('express-handlebars')  // Atualizado para usar o método create
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
 const flash = require('express-flash')
 const conn = require('./db/conn')
+const Tought = require('./models/Tought')
+const User = require('./models/User')
 
 const app = express()
 
-app.engine('handlebars', exphbs())
+// Configuração do handlebars com o método create
+const hbs = create({
+  extname: '.handlebars', // Extensão dos arquivos de template
+  defaultLayout: 'main',  // Layout padrão
+})
+
+app.engine('handlebars', hbs.engine)
 app.set('view engine', 'handlebars')
 
 app.use(
-    express.urlencoded({
-        extended: true
-    })
+  express.urlencoded({
+    extended: true,
+  })
 )
 
 app.use(express.json())
 
-// sesssion midleware
+// Middleware de sessão
 app.use(
-    session({
-        name: 'session',
-        secret: "nosso_secret",
-        resave: false,
-        saveUninitialized: false,
-        store: new FileStore({
-            logFn: function() {},
-            path: require('path').join(require('os').tmpdir(), 'sessions'),
-        }),
-        cookie: {
-            secure: false,
-            maxAge: 360000,
-            expires: new Date(Date.now() + 360000),
-            httpOnly: true
-        }
+  session({
+    name: 'session',
+    secret: 'nosso_secret',
+    resave: false,
+    saveUninitialized: false,
+    store: new FileStore({
+      logFn: function () {},
+      path: require('path').join(require('os').tmpdir(), 'sessions'),
     }),
+    cookie: {
+      secure: false,
+      maxAge: 360000,
+      expires: new Date(Date.now() + 360000),
+      httpOnly: true,
+    },
+  })
 )
 
-// flash messages
+// Flash messages
 app.use(flash())
 
-// public path
+// Caminho público
 app.use(express.static('public'))
 
-//set session to ress
+// Setar sessão no response
 app.use((req, res, next) => {
-    if(req.session.userid) {
-        res.locals.session = req.session
-    }
+  if (req.session.userid) {
+    res.locals.session = req.session
+  }
 
-    next()
+  next()
 })
 
 conn
-    .sync()
-    .then(()=>{
-        app.listen(3000)
-    })
-    .catch((e) => console.log(e))
+  .sync()
+  .then(() => {
+    app.listen(3000)
+  })
+  .catch((e) => console.log(e))
