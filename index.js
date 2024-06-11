@@ -7,6 +7,7 @@ const conn = require('./db/conn')
 const Tought = require('./models/Tought')
 const User = require('./models/User')
 const toughtsRoutes = require('./routes/toughtsRoutes')
+const authRoutes = require('./routes/authRoutes')
 const ToughtsController = require('./controllers/ToughtController')
 
 const app = express()
@@ -65,6 +66,8 @@ app.use((req, res, next) => {
 
 app.use('/toughts', toughtsRoutes)
 app.get('/', ToughtsController.showToughts)
+
+app.use('/', authRoutes)
 
 conn
   .sync()
