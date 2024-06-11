@@ -1,11 +1,13 @@
 const express = require('express')
-const { create } = require('express-handlebars')  // Atualizado para usar o método create
+const { create } = require('express-handlebars')
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
 const flash = require('express-flash')
 const conn = require('./db/conn')
 const Tought = require('./models/Tought')
 const User = require('./models/User')
+const toughtsRoutes = require('./routes/toughtsRoutes')
+const ToughtsController = require('./controllers/ToughtController')
 
 const app = express()
 
@@ -60,6 +62,9 @@ app.use((req, res, next) => {
 
   next()
 })
+
+app.use('/toughts', toughtsRoutes)
+app.get('/', ToughtsController.showToughts)
 
 conn
   .sync()
