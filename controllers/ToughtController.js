@@ -26,7 +26,13 @@ module.exports = class ToughtsController {
 
             const toughts = user.Toughts.map((result)=> result.dataValues)
 
-            res.render('toughts/dashboard', { toughts })
+            let emptyToughts = false
+
+            if(toughts.length === 0) {
+                emptyToughts = true
+            }
+
+            res.render('toughts/dashboard', { toughts, emptyToughts })
         } catch (e) {
             console.log(e)
         }
@@ -56,5 +62,24 @@ module.exports = class ToughtsController {
             console.log(e)
         }
 
+    }
+
+    static async removeTought(req, res) {
+        const id = req.body.id
+        const userId = req.session.userid
+
+        try {
+
+            await Tought.destroy({where: {id: id, UserId: userId}})
+
+            req.flash('message', 'pensamento removido com sucesso')
+
+            req.session.save(() => {
+                res.redirect('/toughts/dashboard')
+            })
+
+        } catch (e) {
+            console.log(e)
+        }
     }
 }

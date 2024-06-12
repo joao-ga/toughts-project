@@ -182,6 +182,10 @@
     margin: 0 0.5em;
   }
   
+  .dashboard a {
+    color:#f6982d;
+  }
+
   /* CREATE / EDIT FORM */
   .tought-form-container a {
     color: #f6982d;
