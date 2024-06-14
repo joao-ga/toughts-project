@@ -1,3 +1,4 @@
+const { where } = require('sequelize')
 const Tought = require('../models/Tought')
 const User = require('../models/User')
 
@@ -81,5 +82,43 @@ module.exports = class ToughtsController {
         } catch (e) {
             console.log(e)
         }
+    }
+
+    static async updateTought(req, res) {
+        const id = req.params.id
+
+        try  {
+            const tought = await Tought.findOne({where: {id: id}, raw:  true})
+
+            res.render('toughts/edit', {tought})
+
+        } catch(e) {
+            console.log(e)
+        }
+        
+    }
+
+    static async updateToughtPost(req, res) {
+
+        const id = req.body.id
+
+        const tought = {
+            title: req.body.title
+        }
+
+        try {
+
+            await Tought.update(tought, {where: {id: id}})
+
+            req.flash('message', 'pensamento editado com sucesso')
+
+            req.session.save(() => {
+                res.redirect('/toughts/dashboard')
+            })
+
+        } catch(e) {
+            console.log(e)
+        }
+
     }
 }
