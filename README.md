@@ -1,4 +1,4 @@
-#Thoughts Project
+Thoughts Project
 
 Welcome to the Thoughts Project repository! This project is a full-stack web application designed to manage user thoughts. It serves as a learning exercise to familiarize myself with a range of technologies and development practices.
 
